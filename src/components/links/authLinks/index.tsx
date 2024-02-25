@@ -1,11 +1,11 @@
 'use client';
 import { useAppDispatch, useAppSelector, useAppStore } from '@/lib/store/hooks';
-import { getUser } from '@/lib/store/selectors';
+import { selectUser } from '@/lib/store/selectors';
 import { removeUser } from '@/lib/store/userStore';
 import Link from 'next/link';
 
 const HomeAuthLinks = () => {
-  const user = useAppSelector(getUser);
+  const user = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
   return (
     <>

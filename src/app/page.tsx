@@ -1,4 +1,4 @@
-import HomeAuthLinks from '@/components/auth/links/authLinks';
+import HomeAuthLinks from '@/components/links/authLinks';
 
 export default function Home() {
   return (

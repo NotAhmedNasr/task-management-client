@@ -1,19 +1,18 @@
 'use client';
 import React from 'react';
 import { AxiosError } from 'axios';
-import _debounce from 'lodash/debounce';
 import { Bounce, ToastContainer, toast } from 'react-toastify';
 import { login } from '../../../lib/services/auth.api';
-import LoginForm from '@/components/auth/forms/login';
-import GoogleLink from '@/components/auth/links/oauth2/google';
+import LoginForm from '@/components/forms/login';
+import GoogleLink from '@/components/links/oauth2/google';
 import { LoginFormValues } from '@/lib/types/login';
 import { setUser } from '@/lib/store/userStore';
-import { getUser } from '@/lib/store/selectors';
+import { selectUser } from '@/lib/store/selectors';
 import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
 import Link from 'next/link';
 
 const Login: React.FC = () => {
-  const user = useAppSelector(getUser);
+  const user = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
 
   if (user) {
@@ -46,7 +45,7 @@ const Login: React.FC = () => {
         <div className="max-w-lg mx-auto mt-32 p-6 bg-white rounded shadow">
           <h1 className="text-2xl font-bold mb-6 text-indigo-600">Login</h1>
           <LoginForm
-            onSubmit={_debounce(onSubmit, 2000, { leading: true })}
+            onSubmit={onSubmit}
             initialValues={initialValues}
           />
           <p className="text-sm text-gray-900 mt-2">

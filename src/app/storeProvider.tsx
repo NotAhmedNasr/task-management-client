@@ -1,28 +1,34 @@
 'use client';
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { Provider } from 'react-redux';
-import { makeStore, AppStore } from '../lib/store';
-import { setUser } from '@/lib/store/userStore';
+import { makePersistedStore, AppStore } from '../lib/store';
 import { PersistGate } from 'redux-persist/integration/react';
-import persistStore from 'redux-persist/es/persistStore';
-import LoadingScreen from '@/components/auth/views/loadingScreen';
+import LoadingScreen from '@/components/views/loadingScreen';
+import { Persistor } from 'redux-persist';
 
 export default function StoreProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const storeRef = useRef<AppStore>();
+  const storeRef = useRef<{ store: AppStore; persistor: Persistor }>();
   if (!storeRef.current) {
-    // Create the store instance the first time this renders
-    storeRef.current = makeStore();
+    storeRef.current = makePersistedStore();
+  }
+  // Handle user change between multiple taps
+  if (typeof window !== 'undefined') {
+    window.addEventListener('storage', (event) => {
+      if (event.url.match(location.origin) && event.key === 'persist:user') {
+        location.reload();
+      }
+    });
   }
 
   return (
-    <Provider store={storeRef.current}>
+    <Provider store={storeRef.current.store}>
       <PersistGate
         loading={<LoadingScreen />}
-        persistor={persistStore(storeRef.current)}
+        persistor={storeRef.current.persistor}
       >
         {children}
       </PersistGate>
