@@ -2,11 +2,6 @@ import { createSlice } from '@reduxjs/toolkit';
 import persistReducer from 'redux-persist/es/persistReducer';
 import storage from 'redux-persist/lib/storage';
 
-// const cacheUser = (user: any) =>
-//   localStorage.setItem('user', JSON.stringify(user));
-// const cacheToken = (token: string | null) =>
-//   localStorage.setItem('token', JSON.stringify(token));
-
 const userSlice = createSlice({
   name: 'user',
   initialState: {

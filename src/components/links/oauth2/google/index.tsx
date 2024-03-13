@@ -1,5 +1,5 @@
 'use client';
-import { FcGoogle } from 'react-icons/fc';
+import { BiLogoGoogle } from 'react-icons/bi';
 
 const GoogleLink = () => {
   return (
@@ -9,7 +9,7 @@ const GoogleLink = () => {
         target="_self"
         className="m-auto"
       >
-        <FcGoogle className="w-20 h-20 border border-white hover:border-gray-200 hover:bg-gray-50 hover:cursor-pointer rounded-md duration-150" />
+        <BiLogoGoogle className="w-20 h-20 border text-gray-700 border-white hover:border-gray-200 hover:bg-gray-100 hover:cursor-pointer rounded-md duration-150" />
       </a>
     </div>
   );

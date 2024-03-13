@@ -151,7 +151,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
 
           <button
             type="submit"
-            className="w-full bg-indigo-600 py-2 px-4 border border-transparent rounded-md text-white font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+            className="w-full bg-gray-800 py-2 px-4 border border-transparent rounded-md text-white font-medium hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-600 disabled:opacity-50 duration-200"
             disabled={isSubmitting}
           >
             Register

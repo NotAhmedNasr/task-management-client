@@ -3,6 +3,7 @@ import { useAppDispatch, useAppSelector, useAppStore } from '@/lib/store/hooks';
 import { selectUser } from '@/lib/store/selectors';
 import { removeUser } from '@/lib/store/userStore';
 import Link from 'next/link';
+import { FiFeather, FiLogIn, FiLogOut } from 'react-icons/fi';
 
 const HomeAuthLinks = () => {
   const user = useAppSelector(selectUser);
@@ -13,23 +14,26 @@ const HomeAuthLinks = () => {
         <button
           type="button"
           onClick={() => dispatch(removeUser())}
-          className="bg-red-950 hover:bg-red-900 text-white py-2 px-4 rounded-sm transition-colors duration-150"
+          className="flex items-center gap-1 text-white font-bold hover:bg-gray-700 px-3 py-2 sm:rounded-md text-sm transition-colors duration-300 ease-in-out"
         >
           Logout
+          <FiLogOut className='text-lg'/>
         </button>
       ) : (
         <div className="flex space-x-4">
           <Link
             href="/auth/login"
-            className="bg-blue-950 hover:bg-blue-900 rounded-sm text-white py-2 px-4 transition-colors duration-150"
+            className="flex items-center gap-1 justify-between text-white font-bold hover:bg-gray-700 px-3 py-2 sm:rounded-md text-sm transition-colors duration-300 ease-in-out"
           >
             Login
+            <FiLogIn className='text-lg' />
           </Link>
           <Link
             href="/auth/register"
-            className="bg-green-950 hover:bg-green-900 text-white py-2 px-4 rounded-sm transition-colors duration-150"
+            className="flex items-center gap-1 text-white font-bold hover:bg-gray-700 px-3 py-2 sm:rounded-md text-sm transition-colors duration-300 ease-in-out"
           >
             Register
+            <FiFeather className='text-lg'/>
           </Link>
         </div>
       )}

@@ -53,7 +53,7 @@ const Register: React.FC = () => {
     <>
       {!user && (
         <div className="max-w-lg mx-auto mt-32 p-6 bg-white rounded shadow">
-          <h1 className="text-2xl font-bold mb-6 text-indigo-600">
+          <h1 className="text-2xl font-bold mb-6 text-gray-600">
             Registration
           </h1>
           <RegistrationForm
