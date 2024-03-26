@@ -8,12 +8,11 @@ const RegistrationSuccess = () => {
       title="Registration Successful"
       icon={<FiCheckCircle className="text-green-500" />}
       message={
-        'Your registration was successful. You can now login to your account'
+        'Your registration was successful, but we are waiting for you to verify your email address.'
       }
-      action={{
-        name: 'Login',
-        handler: () => (location.href = '/auth/login'),
-      }}
+      note={
+        'Please check your inbox and follow the instructions in the email to complete the verification process.'
+      }
     />
   );
 };

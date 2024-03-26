@@ -30,10 +30,21 @@ const Login: React.FC = () => {
       dispatch(setUser(data));
     } catch (error: any) {
       let errMessage = '';
-      if (error instanceof AxiosError)
-        errMessage = error.response?.data.message;
+      if (error instanceof AxiosError){
+        console.log(error.response?.status);
+        switch (error.response?.status) {
+          case 400:
+            errMessage = 'Invalid username or password';
+            break;
+          case 403:
+            errMessage = 'Sorry, this user is blocked';
+            break;
+          default:
+            errMessage = error.response?.data.message;
+        }
+      }
       else {
-        errMessage = error.message ?? 'Error!';
+        errMessage = 'Unexpected error occurred. Try again later';
       }
       toast.error(errMessage);
     }
@@ -44,14 +55,11 @@ const Login: React.FC = () => {
       {!user && (
         <div className="max-w-lg mx-auto mt-32 p-6 bg-white rounded shadow">
           <h1 className="text-2xl font-bold mb-6 text-gray-600">Login</h1>
-          <LoginForm
-            onSubmit={onSubmit}
-            initialValues={initialValues}
-          />
+          <LoginForm onSubmit={onSubmit} initialValues={initialValues} />
           <p className="text-sm text-gray-900 mt-2">
-            Don&apos;t have an account.{' '}
+            {`Don't have an account. `}
             <Link
-              className="text-green-500 hover:underline"
+              className="text-blue-500 hover:underline"
               href={'/auth/register'}
             >
               Register

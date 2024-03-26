@@ -9,7 +9,7 @@ const EmailVerificationSuccess = () => {
       icon={<FiCheckCircle className="text-green-500" />}
       message={'Your Email was verified successfully.'}
       action={{
-        name: 'Go to Login',
+        name: 'Login',
         handler: () => (location.href = '/auth/login'),
       }}
     />
