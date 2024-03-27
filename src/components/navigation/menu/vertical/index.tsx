@@ -10,7 +10,7 @@ const VMenu: React.FC<Props> = ({ links }) => {
     <div className="flex flex-col space-y-2 justify-center">
       {links.map((link) => (
         <NavLink link={link} key={link.text} />
-        ))}
+      ))}
     </div>
   );
 };

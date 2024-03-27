@@ -1,7 +1,7 @@
 'use client';
 
 import { useAppDispatch } from '@/lib/store/hooks';
-import { setUser } from '@/lib/store/userStore';
+import { setUser } from '@/lib/store/user/actions';
 import { googleLogin } from '@/lib/services/auth.api';
 import { useEffect } from 'react';
 import LoadingScreen from '@/components/views/loadingScreen';
@@ -11,7 +11,7 @@ interface PageProps {
   };
   searchParams: Record<string, string>;
 }
-const OauthProviderRedirect = ({ params, searchParams }: PageProps) => {
+const OauthProviderRedirect = ({ searchParams }: PageProps) => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -21,7 +21,7 @@ const OauthProviderRedirect = ({ params, searchParams }: PageProps) => {
         location.href = '/';
       })
       .catch(console.error);
-  }, [searchParams]);
+  }, [searchParams, dispatch]);
 
   return <LoadingScreen />;
 };

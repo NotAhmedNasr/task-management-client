@@ -6,8 +6,8 @@ import { login } from '../../../lib/services/auth.api';
 import LoginForm from '@/components/forms/login';
 import GoogleLink from '@/components/links/oauth2/google';
 import { LoginFormValues } from '@/lib/types/login';
-import { setUser } from '@/lib/store/userStore';
-import { selectUser } from '@/lib/store/selectors';
+import { setUser } from '@/lib/store/user/actions';
+import { selectUser } from '@/lib/store/user/selectors';
 import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
 import Link from 'next/link';
 
@@ -28,10 +28,9 @@ const Login: React.FC = () => {
     try {
       const { data } = await login(values);
       dispatch(setUser(data));
-    } catch (error: any) {
+    } catch (error: unknown) {
       let errMessage = '';
-      if (error instanceof AxiosError){
-        console.log(error.response?.status);
+      if (error instanceof AxiosError) {
         switch (error.response?.status) {
           case 400:
             errMessage = 'Invalid username or password';
@@ -42,8 +41,7 @@ const Login: React.FC = () => {
           default:
             errMessage = error.response?.data.message;
         }
-      }
-      else {
+      } else {
         errMessage = 'Unexpected error occurred. Try again later';
       }
       toast.error(errMessage);

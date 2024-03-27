@@ -20,7 +20,7 @@ export const MobileMenu: React.FC<PropsWithChildren<Props>> = ({
       <div className="flex items-center justify-end h-16 px-4 sm:px-6 lg:px-8">
         <XButton onClick={onClose} size={20} />
       </div>
-      <div className='grow'></div>
+      <div className="grow"></div>
       {children}
     </div>
   );

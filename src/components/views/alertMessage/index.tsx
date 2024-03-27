@@ -1,7 +1,6 @@
 'use client';
 
 import { AlertMessageAction } from '@/lib/types/alertMessage';
-import { MouseEventHandler } from 'react';
 
 interface Props {
   title: string;

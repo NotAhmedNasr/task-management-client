@@ -1,5 +1,6 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
-import userReducer from './userStore';
+import userReducer from './user/reducer';
+
 import {
   FLUSH,
   PAUSE,

@@ -1,8 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
-import persistReducer from 'redux-persist/es/persistReducer';
-import storage from 'redux-persist/lib/storage';
 
-const userSlice = createSlice({
+export const userSlice = createSlice({
   name: 'user',
   initialState: {
     user: null,
@@ -19,9 +17,3 @@ const userSlice = createSlice({
     },
   },
 });
-
-export const { setUser, removeUser } = userSlice.actions;
-export default persistReducer(
-  { key: 'user', storage, timeout: 1000 },
-  userSlice.reducer,
-);

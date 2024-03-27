@@ -8,7 +8,7 @@ import { AxiosError } from 'axios';
 import GoogleLink from '@/components/links/oauth2/google';
 import { useAppSelector } from '@/lib/store/hooks';
 import RegistrationForm from '@/components/forms/register';
-import { selectUser } from '@/lib/store/selectors';
+import { selectUser } from '@/lib/store/user/selectors';
 import Link from 'next/link';
 
 const Register: React.FC = () => {
@@ -30,11 +30,11 @@ const Register: React.FC = () => {
     try {
       await register(_omit(values, 'confirmPassword'));
       location.href = location.pathname + '/success';
-    } catch (error: any) {
+    } catch (error: unknown) {
       let errMessage = '';
       if (error instanceof AxiosError)
         errMessage = error.response?.data.message;
-      else {
+      else if (error instanceof Error) {
         errMessage = error.message ?? 'Error!';
       }
       toast.error(errMessage);

@@ -1,10 +1,11 @@
 export type NavItemBase = {
   text: string;
-  icon?: React.ReactNode
+  icon?: React.ReactNode;
 };
 
 export type NavLinkData = NavItemBase & {
   href: string;
+  onClick?: () => void;
 };
 
 export type NavButtonData = NavItemBase & {
@@ -18,5 +19,5 @@ export const isNavLink = (link: NavItemData): link is NavLinkData => {
 };
 
 export const isNavButton = (link: NavItemData): link is NavButtonData => {
-  return !!(link as NavButtonData).onClick;
+  return !(link as NavLinkData).href;
 };

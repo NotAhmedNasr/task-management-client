@@ -31,7 +31,6 @@ const VerifyEmail = ({ searchParams }: PageProps) => {
       .finally(() => setLoading(false));
   }, [searchParams]);
 
-
   return (
     <>
       {loading ? (
