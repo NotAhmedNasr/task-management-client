@@ -6,7 +6,7 @@ import { login } from '../../../lib/services/auth.api';
 import LoginForm from '@/components/forms/login';
 import GoogleLink from '@/components/links/oauth2/google';
 import { LoginFormValues } from '@/lib/types/login';
-import { setUser } from '@/lib/store/user/actions';
+import { setToken, setUser } from '@/lib/store/user/actions';
 import { selectUser } from '@/lib/store/user/selectors';
 import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
 import Link from 'next/link';
@@ -26,8 +26,9 @@ const Login: React.FC = () => {
 
   const onSubmit = async (values: LoginFormValues) => {
     try {
-      const { data } = await login(values);
-      dispatch(setUser(data));
+      const data = await login(values);
+      dispatch(setToken(data.token));
+      dispatch(setUser(data.user));
     } catch (error: unknown) {
       let errMessage = '';
       if (error instanceof AxiosError) {

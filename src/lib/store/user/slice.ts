@@ -12,12 +12,11 @@ export const userSlice = createSlice({
   name: userSliceName,
   initialState,
   reducers: {
-    setUser: (
-      state: UserState,
-      action: PayloadAction<{ token: string; user: AppUser }>,
-    ) => {
-      state.user = action.payload.user;
-      state.token = action.payload.token;
+    setToken: (state: UserState, action: PayloadAction<string>) => {
+      state.token = action.payload;
+    },
+    setUser: (state: UserState, action: PayloadAction<AppUser>) => {
+      state.user = action.payload;
     },
     removeUser: (state: UserState) => {
       state.user = null;

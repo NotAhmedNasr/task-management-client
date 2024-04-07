@@ -1,3 +1,4 @@
+import { AppUser } from '../store/user/types';
 import axiosInstance from './axios/instance';
 
 interface GetUserOptions {
@@ -5,7 +6,7 @@ interface GetUserOptions {
 }
 
 export const getUser = ({ token }: GetUserOptions) => {
-  return axiosInstance.get('/users/me', {
+  return axiosInstance.get<AppUser>('/users/me', {
     headers: {
       Authorization: `Bearer ${token}`,
     },
