@@ -1,4 +1,5 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import createSagaMiddleware from 'redux-saga';
 import userReducer from './user/reducer';
 
 import {
@@ -15,6 +16,8 @@ const rootState = combineReducers({
   user: userReducer,
 });
 
+const sagaMiddleware = createSagaMiddleware();
+
 export const makePersistedStore = () => {
   const store = configureStore({
     reducer: rootState,
@@ -23,18 +26,14 @@ export const makePersistedStore = () => {
         serializableCheck: {
           ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
         },
-      }),
+      }).concat(sagaMiddleware),
     devTools: process.env.NODE_ENV !== 'production',
   });
+
+  // sagaMiddleware.run(...);
 
   return {
     store,
     persistor: persistStore(store),
   };
 };
-
-// Infer the type of makeStore
-export type AppStore = ReturnType<typeof makePersistedStore>['store'];
-// Infer the `RootState` and `AppDispatch` types from the store itself
-export type AppRootState = ReturnType<AppStore['getState']>;
-export type AppDispatch = AppStore['dispatch'];
