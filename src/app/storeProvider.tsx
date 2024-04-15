@@ -1,10 +1,11 @@
 'use client';
 import { useRef } from 'react';
 import { Provider } from 'react-redux';
-import { makePersistedStore, AppStore } from '../lib/store';
+import { makePersistedStore } from '../lib/store';
 import { PersistGate } from 'redux-persist/integration/react';
 import LoadingScreen from '@/components/views/loadingScreen';
 import { Persistor } from 'redux-persist';
+import { AppStore } from '@/lib/store/types';
 
 export default function StoreProvider({
   children,

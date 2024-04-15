@@ -12,23 +12,23 @@ const HomeAuthLinks = () => {
       {user ? (
         <Link
           href={'/auth/logout'}
-          className="flex items-center gap-1 text-white font-bold hover:bg-gray-700 px-3 py-2 sm:rounded-md text-sm transition-colors duration-300 ease-in-out"
+          className="flex items-center gap-1 text-white font-bold hover:bg-gray-700 px-3 py-2 rounded-sm text-sm transition-colors duration-300 ease-in-out"
         >
           Logout
           <FiLogOut className="text-lg" />
         </Link>
       ) : (
-        <div className="flex space-x-4">
+        <div className="flex gap-4 flex-col sm:flex-row items-start">
           <Link
             href="/auth/login"
-            className="flex items-center gap-1 justify-between text-white font-bold hover:bg-gray-700 px-3 py-2 sm:rounded-md text-sm transition-colors duration-300 ease-in-out"
+            className="flex items-center gap-1 text-white font-bold hover:bg-gray-700 px-3 py-2 rounded-sm text-sm transition-colors duration-300 ease-in-out"
           >
             Login
             <FiLogIn className="text-lg" />
           </Link>
           <Link
             href="/auth/register"
-            className="flex items-center gap-1 text-white font-bold hover:bg-gray-700 px-3 py-2 sm:rounded-md text-sm transition-colors duration-300 ease-in-out"
+            className="flex items-center gap-1 text-white font-bold hover:bg-gray-700 px-3 py-2 rounded-sm text-sm transition-colors duration-300 ease-in-out"
           >
             Register
             <FiFeather className="text-lg" />

@@ -43,3 +43,18 @@ export const registrationSchema = Yup.object().shape({
     .matches(ALPHA_REGEX, 'Only alphabetical letters')
     .required('* Required'),
 });
+
+export const pickFromYupObjectSchema = (
+  schema: Yup.ISchema<unknown>,
+  fieldNames: string[],
+) => {
+  return Yup.object().shape(
+    fieldNames.reduce(
+      (agg, curr) => ({
+        ...agg,
+        [curr]: Yup.reach(schema, curr),
+      }),
+      {},
+    ),
+  );
+};

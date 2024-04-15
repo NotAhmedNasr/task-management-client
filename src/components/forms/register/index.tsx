@@ -1,7 +1,7 @@
 'use client';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { RegisterFormValues } from '@/lib/types/registration';
-import { registrationSchema } from '@/lib/schema/utils';
+import { registrationSchema } from '@/lib/schema/register';
 
 interface RegistrationFormProps {
   initialValues: RegisterFormValues;

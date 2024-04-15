@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import _omit from 'lodash/omit';
-import { Bounce, ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import { RegisterFormValues } from '../../../lib/types/registration';
 import { register } from '../../../lib/services/auth.api';
 import { AxiosError } from 'axios';
@@ -79,20 +79,6 @@ const Register: React.FC = () => {
           <GoogleLink />
         </div>
       )}
-
-      <ToastContainer
-        position="bottom-center"
-        autoClose={2000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-        transition={Bounce}
-      />
     </>
   );
 };
