@@ -31,3 +31,33 @@ export const verifyEmail = (token: string) => {
     params: { token },
   });
 };
+
+export interface LoginAttempt {
+  type: string;
+  success: boolean;
+  address: string;
+  agent: string;
+  time: string;
+}
+
+export interface Pagination {
+  page: number;
+  pageSize: number;
+  total?: number;
+}
+
+interface LoginHistoryResponse {
+  data: LoginAttempt[];
+  meta: {
+    pagination: Pagination;
+  };
+}
+
+export const getLoginHistory = (token: string, pagination: Pagination) => {
+  return axiosInstance.get<LoginHistoryResponse>('/log/loginHistory', {
+    params: { ...pagination },
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};

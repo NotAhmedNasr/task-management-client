@@ -4,6 +4,7 @@ import SideMenu from '@/components/sideMenu';
 import ContentSection from './contentSection';
 import { useState } from 'react';
 import PersonalInfo from './personalInfo';
+import LoginHistory from './loginHistory';
 
 export interface AccountSection {
   id: string;
@@ -21,7 +22,7 @@ const MainSection = () => {
     {
       id: '2',
       label: 'Login History',
-      component: <div>login history here</div>,
+      component: <LoginHistory />,
     },
   ];
 
