@@ -1,7 +1,10 @@
 'use client';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { RegisterFormValues } from '@/lib/types/registration';
-import { registrationSchema } from '@/lib/schema/register';
+import {
+  pickFromYupObjectSchema,
+  registrationSchema,
+} from '@/lib/schema/register';
 
 interface RegistrationFormProps {
   initialValues: RegisterFormValues;
@@ -9,18 +12,31 @@ interface RegistrationFormProps {
   validate: (
     values: RegisterFormValues,
   ) => Promise<Partial<RegisterFormValues>> | Partial<RegisterFormValues>;
+  disabledFields?: string[];
+  loginFieldsOnly?: boolean;
 }
 
 const RegistrationForm: React.FC<RegistrationFormProps> = ({
   initialValues,
   onSubmit,
   validate,
+  disabledFields,
+  loginFieldsOnly,
 }) => {
   return (
     <Formik
       initialValues={initialValues}
       onSubmit={onSubmit}
-      validationSchema={registrationSchema}
+      validationSchema={
+        loginFieldsOnly
+          ? pickFromYupObjectSchema(registrationSchema, [
+              'username',
+              'email',
+              'password',
+              'confirmPassword',
+            ])
+          : registrationSchema
+      }
       validate={validate}
     >
       {({ isSubmitting }) => (
@@ -36,6 +52,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
               type="text"
               id="username"
               name="username"
+              disabled={disabledFields?.includes('username')}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-black"
             />
             <ErrorMessage
@@ -56,6 +73,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
               type="text"
               id="email"
               name="email"
+              disabled={disabledFields?.includes('email')}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-black"
             />
             <ErrorMessage
@@ -77,6 +95,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                 type="password"
                 id="password"
                 name="password"
+                disabled={disabledFields?.includes('password')}
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-black"
               />
               <ErrorMessage
@@ -97,6 +116,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                 type="password"
                 id="confirmPassword"
                 name="confirmPassword"
+                disabled={disabledFields?.includes('confirmPassword')}
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-black"
               />
               <ErrorMessage
@@ -107,47 +127,51 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
             </div>
           </div>
 
-          <div className="flex space-x-4">
-            <div className="mb-4 grow">
-              <label
-                htmlFor="firstName"
-                className="block text-sm font-medium text-gray-700"
-              >
-                First Name
-              </label>
-              <Field
-                type="text"
-                id="firstName"
-                name="firstName"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-black"
-              />
-              <ErrorMessage
-                name="firstName"
-                component="div"
-                className="text-red-500 text-xs mt-1"
-              />
-            </div>
+          {!loginFieldsOnly && (
+            <div className="flex space-x-4">
+              <div className="mb-4 grow">
+                <label
+                  htmlFor="firstName"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  First Name
+                </label>
+                <Field
+                  type="text"
+                  id="firstName"
+                  name="firstName"
+                  disabled={disabledFields?.includes('firstName')}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-black"
+                />
+                <ErrorMessage
+                  name="firstName"
+                  component="div"
+                  className="text-red-500 text-xs mt-1"
+                />
+              </div>
 
-            <div className="mb-4 grow">
-              <label
-                htmlFor="lastName"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Last Name
-              </label>
-              <Field
-                type="text"
-                id="lastName"
-                name="lastName"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-black"
-              />
-              <ErrorMessage
-                name="lastName"
-                component="div"
-                className="text-red-500 text-xs mt-1"
-              />
+              <div className="mb-4 grow">
+                <label
+                  htmlFor="lastName"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Last Name
+                </label>
+                <Field
+                  type="text"
+                  id="lastName"
+                  name="lastName"
+                  disabled={disabledFields?.includes('lastName')}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-black"
+                />
+                <ErrorMessage
+                  name="lastName"
+                  component="div"
+                  className="text-red-500 text-xs mt-1"
+                />
+              </div>
             </div>
-          </div>
+          )}
 
           <button
             type="submit"

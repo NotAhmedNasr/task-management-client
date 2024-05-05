@@ -2,6 +2,7 @@ import axiosInstance from './axios/instance';
 import { RegisterFormValues } from '@/lib/types/registration';
 import { LoginFormValues } from '@/lib/types/login';
 import { AppUser } from '../store/user/types';
+import { promiseToErrResult } from '../utils/promiseToErrResult';
 
 export const register = (data: Omit<RegisterFormValues, 'confirmPassword'>) => {
   return axiosInstance.post('/local/register', data);
@@ -30,6 +31,32 @@ export const verifyEmail = (token: string) => {
   return axiosInstance.get<{ message: string }>('/local/verify', {
     params: { token },
   });
+};
+
+export const linkAccountRequest = (email: string) => {
+  const promise = axiosInstance.post<{ code: string; message: string }>(
+    '/local/linkAccountRequest',
+    {
+      email,
+    },
+  );
+
+  return promiseToErrResult(promise);
+};
+
+export const linkAccount = (
+  token: string,
+  data: Omit<RegisterFormValues, 'confirmPassword' | 'email'>,
+) => {
+  const promise = axiosInstance.post<{ message: string }>(
+    '/local/linkAccount',
+    {
+      token,
+      data,
+    },
+  );
+
+  return promiseToErrResult(promise);
 };
 
 export interface LoginAttempt {

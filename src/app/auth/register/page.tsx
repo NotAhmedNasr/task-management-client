@@ -3,13 +3,14 @@ import React from 'react';
 import _omit from 'lodash/omit';
 import { toast } from 'react-toastify';
 import { RegisterFormValues } from '../../../lib/types/registration';
-import { register } from '../../../lib/services/auth.api';
+import { linkAccountRequest, register } from '../../../lib/services/auth.api';
 import { AxiosError } from 'axios';
 import GoogleLink from '@/components/links/oauth2/google';
 import { useAppSelector } from '@/lib/store/hooks';
 import RegistrationForm from '@/components/forms/register';
 import { selectUser } from '@/lib/store/user/selectors';
 import Link from 'next/link';
+import { openAlertDialog } from '@/components/dialog/alert';
 
 const Register: React.FC = () => {
   const user = useAppSelector(selectUser);
@@ -32,9 +33,24 @@ const Register: React.FC = () => {
       location.href = location.pathname + '/success';
     } catch (error: unknown) {
       let errMessage = '';
-      if (error instanceof AxiosError)
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 409) {
+          openAlertDialog({
+            title: 'Account Exists!',
+            body: 'There is an account registered with the same email using a provider (Google). Do you want to link that account instead?',
+            onAccept: async () => {
+              const { err } = await linkAccountRequest(values.email);
+              if (err) {
+                toast.error(err.message);
+                return;
+              }
+              location.href = location.pathname + '/verificationRequired';
+            },
+          });
+          return;
+        }
         errMessage = error.response?.data.message;
-      else if (error instanceof Error) {
+      } else if (error instanceof Error) {
         errMessage = error.message ?? 'Error!';
       }
       toast.error(errMessage);
