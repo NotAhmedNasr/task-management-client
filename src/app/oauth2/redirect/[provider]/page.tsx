@@ -1,30 +1,28 @@
 'use client';
 
 import { useAppDispatch } from '@/lib/store/hooks';
-import { setUser } from '@/lib/store/userStore';
+import { setToken, setUser } from '@/lib/store/user/actions';
 import { googleLogin } from '@/lib/services/auth.api';
-import _debounce from 'lodash/debounce';
 import { useEffect } from 'react';
-import LoadingScreen from '@/components/auth/views/loadingScreen';
+import LoadingScreen from '@/components/views/loadingScreen';
 interface PageProps {
   params: {
     provider: string;
   };
   searchParams: Record<string, string>;
 }
-const OauthProviderRedirect = ({ params, searchParams }: PageProps) => {
+const OauthProviderRedirect = ({ searchParams }: PageProps) => {
   const dispatch = useAppDispatch();
-  const login = _debounce((params) => googleLogin(params), 5000, {
-    leading: true,
-  });
+
   useEffect(() => {
-    login(searchParams)
+    googleLogin(searchParams)
       .then(({ data }) => {
-        dispatch(setUser(data));
+        dispatch(setToken(data.token));
+        dispatch(setUser(data.user));
         location.href = '/';
       })
       .catch(console.error);
-  }, [searchParams]);
+  }, [searchParams, dispatch]);
 
   return <LoadingScreen />;
 };

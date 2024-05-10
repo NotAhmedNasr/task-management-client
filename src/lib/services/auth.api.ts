@@ -1,24 +1,90 @@
-import axios from 'axios';
-import { RegisterFormValues } from '../lib/types/registration';
+import axiosInstance from './axios/instance';
+import { RegisterFormValues } from '@/lib/types/registration';
 import { LoginFormValues } from '@/lib/types/login';
-
-const instance = axios.create({
-  baseURL: process.env.BACKEND_URL,
-});
+import { AppUser } from '../store/user/types';
+import { promiseToErrResult } from '../utils/promiseToErrResult';
 
 export const register = (data: Omit<RegisterFormValues, 'confirmPassword'>) => {
-  return instance.post('/local/register', data);
+  return axiosInstance.post('/local/register', data);
 };
 
-export const login = ({ username, password }: LoginFormValues) => {
-  return instance.post('/local/login', {
+interface LoginResponseData {
+  token: string;
+  user: AppUser;
+}
+
+export const login = async ({ username, password }: LoginFormValues) => {
+  const { data } = await axiosInstance.post<LoginResponseData>('/local/login', {
     identifier: username,
     password,
   });
+  return data;
 };
 
 export const googleLogin = (searchParams: Record<string, string>) => {
-  return instance.get('/oauth2/redirect/google', {
+  return axiosInstance.get<LoginResponseData>('/oauth2/redirect/google', {
     params: searchParams,
+  });
+};
+
+export const verifyEmail = (token: string) => {
+  return axiosInstance.get<{ message: string }>('/local/verify', {
+    params: { token },
+  });
+};
+
+export const linkAccountRequest = (email: string) => {
+  const promise = axiosInstance.post<{ code: string; message: string }>(
+    '/local/linkAccountRequest',
+    {
+      email,
+    },
+  );
+
+  return promiseToErrResult(promise);
+};
+
+export const linkAccount = (
+  token: string,
+  data: Omit<RegisterFormValues, 'confirmPassword' | 'email'>,
+) => {
+  const promise = axiosInstance.post<{ message: string }>(
+    '/local/linkAccount',
+    {
+      token,
+      data,
+    },
+  );
+
+  return promiseToErrResult(promise);
+};
+
+export interface LoginAttempt {
+  type: string;
+  success: boolean;
+  address: string;
+  agent: string;
+  time: string;
+}
+
+export interface Pagination {
+  page: number;
+  pageSize: number;
+  total?: number;
+}
+
+interface LoginHistoryResponse {
+  data: LoginAttempt[];
+  meta: {
+    pagination: Pagination;
+  };
+}
+
+export const getLoginHistory = (token: string, pagination: Pagination) => {
+  return axiosInstance.get<LoginHistoryResponse>('/log/loginHistory', {
+    params: { ...pagination },
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
 };

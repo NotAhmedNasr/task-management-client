@@ -1,5 +1,7 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
-import userReducer from './userStore';
+import createSagaMiddleware from 'redux-saga';
+import userReducer from './user/reducer';
+
 import {
   FLUSH,
   PAUSE,
@@ -8,26 +10,30 @@ import {
   REGISTER,
   REHYDRATE,
 } from 'redux-persist';
+import persistStore from 'redux-persist/es/persistStore';
 
 const rootState = combineReducers({
   user: userReducer,
 });
 
-export const makeStore = () => {
-  return configureStore({
+const sagaMiddleware = createSagaMiddleware();
+
+export const makePersistedStore = () => {
+  const store = configureStore({
     reducer: rootState,
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
         serializableCheck: {
           ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
         },
-      }),
+      }).concat(sagaMiddleware),
     devTools: process.env.NODE_ENV !== 'production',
   });
-};
 
-// Infer the type of makeStore
-export type AppStore = ReturnType<typeof makeStore>;
-// Infer the `RootState` and `AppDispatch` types from the store itself
-export type AppRootState = ReturnType<AppStore['getState']>;
-export type AppDispatch = AppStore['dispatch'];
+  // sagaMiddleware.run(...);
+
+  return {
+    store,
+    persistor: persistStore(store),
+  };
+};

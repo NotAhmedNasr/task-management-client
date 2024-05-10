@@ -1,6 +1,16 @@
 {
-  "extends": "next/core-web-vitals",
+  "extends": [
+    "next/core-web-vitals",
+    "plugin:prettier/recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "plugins": [
+    "unused-imports",
+    "@typescript-eslint/eslint-plugin"
+  ],
   "rules": {
-    "semi": "error"
+    "semi": "error",
+    "unused-imports/no-unused-imports": "error",
+    "unused-imports/no-unused-vars": "error"
   }
 }
