@@ -8,20 +8,22 @@ import MobileMenu from '../menu/mobile';
 import { useState } from 'react';
 import { NavItemData } from '@/lib/types/navigation';
 import HomeAuthLinks from '@/components/links/authLinks';
-import { FiHome } from 'react-icons/fi';
+import { FiHome, FiUser } from 'react-icons/fi';
+import { useAppSelector } from '@/lib/store/hooks';
+import { selectUser } from '@/lib/store/user/selectors';
 
 const Navbar: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const links: NavItemData[] = [
-    // {
-    //   href: '/tasks',
-    //   text: 'Tasks',
-    // },
-    // {
-    //   href: '/me',
-    //   text: 'Profile',
-    // },
+  const user = useAppSelector(selectUser);
+  const loggedInLinks: NavItemData[] = [
+    {
+      href: '/account',
+      text: 'Account',
+      icon: <FiUser className="text-xl" />,
+    },
   ];
+
+  const links = [...(user ? loggedInLinks : [])];
 
   return (
     <nav className="dark:bg-gray-800 shadow-lg fixed top-0 right-0 left-0 z-20">
