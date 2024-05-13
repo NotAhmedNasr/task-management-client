@@ -3,4 +3,5 @@ export interface Board {
   name: string;
   createdById: number;
   personal: boolean;
+  createdAt: string;
 }
