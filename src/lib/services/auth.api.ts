@@ -3,6 +3,7 @@ import { RegisterFormValues } from '@/lib/types/registration';
 import { LoginFormValues } from '@/lib/types/login';
 import { AppUser } from '../store/user/types';
 import { promiseToErrResult } from '../utils/promiseToErrResult';
+import { GetManyResponseType, Pagination } from '../types/api';
 
 export const register = (data: Omit<RegisterFormValues, 'confirmPassword'>) => {
   return axiosInstance.post('/local/register', data);
@@ -67,24 +68,14 @@ export interface LoginAttempt {
   time: string;
 }
 
-export interface Pagination {
-  page: number;
-  pageSize: number;
-  total?: number;
-}
-
-interface LoginHistoryResponse {
-  data: LoginAttempt[];
-  meta: {
-    pagination: Pagination;
-  };
-}
-
 export const getLoginHistory = (token: string, pagination: Pagination) => {
-  return axiosInstance.get<LoginHistoryResponse>('/log/loginHistory', {
-    params: { ...pagination },
-    headers: {
-      Authorization: `Bearer ${token}`,
+  return axiosInstance.get<GetManyResponseType<LoginAttempt>>(
+    '/log/loginHistory',
+    {
+      params: { ...pagination },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     },
-  });
+  );
 };
