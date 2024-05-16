@@ -14,7 +14,7 @@ const taskStatusPalette: Record<TaskStatus, BadgeColor> = {
 
 const TaskCard: React.FC<Props> = ({ task }) => {
   return (
-    <div className="bg-gray-100 dark:bg-gray-900 rounded-sm rounded-tl-xl rounded-br-xl drop-shadow-lg p-5 min-h-44 flex flex-col justify-between gap-5">
+    <div className="bg-gray-100 dark:bg-gray-900 hover:cursor-pointer transition duration-200 hover:scale-105 rounded-sm rounded-tl-xl rounded-br-xl drop-shadow-lg p-5 min-h-44 flex flex-col justify-between gap-5">
       <div className="flex justify-between">
         <h3 className="text-md text-gray-700 dark:text-gray-50 font-semibold">
           {task.title}

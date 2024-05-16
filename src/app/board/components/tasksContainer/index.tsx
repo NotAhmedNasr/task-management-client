@@ -12,7 +12,7 @@ const TasksContainer: React.FC<Props> = ({ tasks }) => {
   const tasksByStatus = _groupBy(tasks, 'status');
 
   return (
-    <section className="flex flex-row gap-10 justify-between overflow-auto mx-20 mt-20 bg-gray-400 dark:bg-gray-800 p-10">
+    <section className="flex flex-row gap-10 justify-between overflow-auto bg-gray-400 dark:bg-gray-800 p-10">
       <VerticalSection
         title="To Do"
         tasks={([] as Task[]).concat(

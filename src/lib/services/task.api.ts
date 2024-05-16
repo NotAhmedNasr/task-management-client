@@ -33,3 +33,17 @@ export const getTasks = (boardId: string, token: string) => {
 
   return promiseToErrResult(promise);
 };
+
+export type CreateTaskData = Pick<
+  Task,
+  'title' | 'description' | 'boardId' | 'dueAt'
+>;
+
+export const createTask = (data: CreateTaskData, token: string) => {
+  const promise = axiosInstance.post('/tasks', data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return promiseToErrResult(promise);
+};
