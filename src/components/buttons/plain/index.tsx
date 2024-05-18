@@ -8,11 +8,14 @@ interface Props {
 }
 
 const colorPalette = {
-  default: 'bg-gray-800 hover:bg-gray-700',
-  yellow: 'bg-yellow-800 hover:bg-yellow-700',
-  blue: 'bg-blue-800 hover:bg-blue-700',
-  green: 'bg-green-800 hover:bg-green-700',
-  red: 'bg-red-800 hover:bg-red-700',
+  default:
+    'text-white bg-gray-800 hover:bg-gray-700 disabled:text-gray-400 disabled:cursor-not-allowed disabled:bg-gray-900 disabled:hover:bg-gray-900',
+  yellow:
+    'text-white bg-yellow-800 hover:bg-yellow-700 disabled:text-gray-400 disabled:cursor-not-allowed disabled:bg-yellow-900 disabled:hover:bg-yellow-900',
+  blue: 'text-white bg-blue-800 hover:bg-blue-700 disabled:text-gray-400 disabled:cursor-not-allowed disabled:bg-blue-900 disabled:hover:bg-blue-900',
+  green:
+    'text-white bg-green-800 hover:bg-green-700 disabled:text-gray-400 disabled:cursor-not-allowed disabled:bg-green-900 disabled:hover:bg-green-900',
+  red: 'text-white bg-red-800 hover:bg-red-700 disabled:text-gray-400 disabled:cursor-not-allowed disabled:bg-red-900 disabled:hover:bg-red-900',
 };
 
 const PlainButton: React.FC<PropsWithChildren<Props>> = ({

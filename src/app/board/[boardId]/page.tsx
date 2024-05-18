@@ -1,18 +1,28 @@
 'use client';
 
-import { useAppSelector } from '@/lib/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
 import { useEffect, useState } from 'react';
 import LoadingScreen from '@/components/views/loadingScreen';
 import { selectToken } from '@/lib/store/user/selectors';
 import { getBoardById } from '@/lib/services/board.api';
-import { CreateTaskData, createTask, getTasks } from '@/lib/services/task.api';
+import {
+  CreateTaskData,
+  EditTaskData,
+  createTask,
+  editTask,
+  changeTaskStatus,
+  getTasks,
+} from '@/lib/services/task.api';
 import { Board } from '@/lib/types/board';
-import { Task } from '@/lib/types/task';
+import { Task, TaskStatus } from '@/lib/types/task';
 import TasksContainer from '../components/tasksContainer';
 import TaskForm from '../components/taskForm';
 import PlainButton from '@/components/buttons/plain';
 import { FiEdit } from 'react-icons/fi';
 import { toast } from 'react-toastify';
+import { selectIsTaskFormOpen } from '@/lib/store/task/selectors';
+import { openTaskForm } from '@/lib/store/task/actions';
+import { openAlertDialog } from '@/components/dialog/alert';
 interface PageProps {
   params: {
     boardId: string;
@@ -23,7 +33,8 @@ const BoardPage = ({ params: { boardId } }: PageProps) => {
   const token = useAppSelector(selectToken);
   const [board, setBoard] = useState<Board>();
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [taskFormOpen, setTaskFormOpen] = useState(false);
+  const isTaskFormOpen = useAppSelector(selectIsTaskFormOpen);
+  const dispatch = useAppDispatch();
 
   const getTasksData = async () => {
     const { err, result } = await getTasks(boardId, token ?? '');
@@ -54,6 +65,33 @@ const BoardPage = ({ params: { boardId } }: PageProps) => {
     return true;
   };
 
+  const onEditTask = async (id: Task['id'], data: EditTaskData) => {
+    const { err } = await editTask(id, data, token ?? '');
+
+    if (err) {
+      toast.error(err.message);
+      return false;
+    }
+    toast.info('Task was edited successfully');
+    getTasksData();
+    return true;
+  };
+
+  const onChangeTaskStatus = async (id: Task['id'], status: TaskStatus) => {
+    openAlertDialog({
+      title: 'Are you sure?',
+      body: `The task status will be changed to ${status}`,
+      onAccept: async () => {
+        const { err } = await changeTaskStatus(id, status, token ?? '');
+        if (err) {
+          toast.error(err.message);
+        }
+        toast.info('Task was edited successfully');
+        getTasksData();
+      },
+    });
+  };
+
   useEffect(() => {
     getBoardData();
   }, []);
@@ -67,7 +105,7 @@ const BoardPage = ({ params: { boardId } }: PageProps) => {
         <PlainButton
           color="blue"
           onClick={() => {
-            setTaskFormOpen(true);
+            dispatch(openTaskForm());
           }}
         >
           <div className="flex gap-2 items-center">
@@ -76,13 +114,15 @@ const BoardPage = ({ params: { boardId } }: PageProps) => {
           </div>
         </PlainButton>
       </div>
-      <TasksContainer tasks={tasks} />
+      <TasksContainer onChangeTaskStatus={onChangeTaskStatus} tasks={tasks} />
       <TaskForm
-        onClose={() => {
-          setTaskFormOpen(false);
+        onSubmit={(data, id) => {
+          if (id) {
+            return onEditTask(id, data);
+          }
+          return onCreateTask({ ...data, boardId });
         }}
-        onSubmit={(data) => onCreateTask({ ...data, boardId })}
-        isOpen={taskFormOpen}
+        isOpen={isTaskFormOpen}
       />
     </section>
   );

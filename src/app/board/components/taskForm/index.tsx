@@ -1,5 +1,4 @@
 import PlainButton from '@/components/buttons/plain';
-import { Task } from '@/lib/types/task';
 import { Box, Modal } from '@mui/material';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -8,6 +7,11 @@ import { taskSchema } from '@/lib/schema/task';
 import _ from 'lodash';
 import { openAlertDialog } from '@/components/dialog/alert';
 import { useRef } from 'react';
+import XButton from '@/components/buttons/x';
+import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
+import { closeTaskForm, editTaskFinished } from '@/lib/store/task/actions';
+import { selectEditedTask } from '@/lib/store/task/selectors';
+import { Task } from '@/lib/types/task';
 
 interface FormValues {
   title: string;
@@ -16,21 +20,15 @@ interface FormValues {
 }
 
 interface Props {
-  onClose: (
+  onClose?: (
     event?: unknown,
     reason?: 'backdropClick' | 'escapeKeyDown',
   ) => void;
-  onSubmit: (values: FormValues) => boolean | Promise<boolean>;
-  task?: Task;
+  onSubmit: (values: FormValues, id?: Task['id']) => boolean | Promise<boolean>;
   isOpen?: boolean;
 }
 
-const TaskForm: React.FC<Props> = ({
-  task,
-  isOpen = false,
-  onClose,
-  onSubmit,
-}) => {
+const TaskForm: React.FC<Props> = ({ isOpen = false, onClose, onSubmit }) => {
   const formRef = useRef<
     FormikProps<{
       title: string;
@@ -38,56 +36,83 @@ const TaskForm: React.FC<Props> = ({
       dueAt: string | undefined;
     }>
   >(null);
+  const dispatch = useAppDispatch();
+  const editedTask = useAppSelector(selectEditedTask);
 
   const initialValues = {
-    title: task?.title ?? '',
-    description: task?.description ?? '',
-    dueAt: task?.dueAt,
+    title: editedTask?.title ?? '',
+    description: editedTask?.description ?? '',
+    dueAt: editedTask?.dueAt,
+  };
+
+  const closeModal: Props['onClose'] = (ev, reason) => {
+    onClose?.(ev, reason);
+    dispatch(closeTaskForm());
+    if (editedTask) dispatch(editTaskFinished());
+  };
+
+  const formHasChanges = () => {
+    return (
+      formRef.current &&
+      formRef.current.dirty &&
+      !_.isEqual(formRef.current.values, initialValues)
+    );
+  };
+
+  const onModalClose: Props['onClose'] = (ev, reason) => {
+    if (formRef.current?.isSubmitting) return;
+    if (formHasChanges()) {
+      openAlertDialog({
+        title: 'Warning!',
+        body: "Changes done won't be saved ",
+        onAccept: () => {
+          closeModal(ev, reason);
+        },
+      });
+    } else {
+      closeModal(ev, reason);
+    }
   };
 
   return (
     <Modal
       open={isOpen}
-      onClose={(ev, reason) => {
-        if (
-          formRef.current &&
-          formRef.current.dirty &&
-          !_.isEqual(formRef.current.values, initialValues)
-        ) {
-          openAlertDialog({
-            title: 'Warning!',
-            body: "Changes done won't be saved ",
-            onAccept: () => {
-              onClose(ev, reason);
-            },
-          });
-        } else {
-          onClose(ev, reason);
-        }
-      }}
+      onClose={onModalClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
       <Box className="bg-gray-800 mx-10 mt-20 md:mx-30 xl:mx-80 p-10">
-        <div>
-          <h2 className="text-xl font-semibold mb-4">Create Task</h2>
-          <Formik
-            innerRef={formRef}
-            initialValues={initialValues}
-            onSubmit={async (values, { setSubmitting }) => {
-              const shouldClose = await onSubmit({
+        <Formik
+          innerRef={formRef}
+          initialValues={initialValues}
+          onSubmit={async (values, { setSubmitting }) => {
+            const shouldClose = await onSubmit(
+              {
                 title: values.title,
                 description: values.description,
                 dueAt: new Date(values.dueAt ?? '').toISOString(),
-              });
-              setSubmitting(false);
-              if (shouldClose) {
-                onClose();
-              }
-            }}
-            validationSchema={taskSchema}
-          >
-            {({ isSubmitting, setFieldValue, values, submitForm }) => (
+              },
+              editedTask?.id,
+            );
+            setSubmitting(false);
+            if (shouldClose) {
+              closeModal();
+            }
+          }}
+          validationSchema={taskSchema}
+        >
+          {({ isSubmitting, setFieldValue, values, submitForm }) => (
+            <div>
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-semibold">
+                  {editedTask ? 'Edit Task' : 'Create Task'}
+                </h2>
+                <XButton
+                  disabled={isSubmitting}
+                  onClick={() => onModalClose()}
+                  size={24}
+                />
+              </div>
               <Form className="flex flex-col">
                 <div className="mb-4">
                   <label
@@ -99,6 +124,7 @@ const TaskForm: React.FC<Props> = ({
                   <Field
                     type="text"
                     id="title"
+                    disabled={isSubmitting}
                     name="title"
                     placeholder="Ex: Schedule a meeting with John Doe"
                     className="mt-1 block w-full px-3 py-2 bg-gray-700 transition duration-200 border border-gray-700 focus:border focus:border-gray-200 rounded-sm shadow-sm focus:outline-none  sm:text-sm text-gray-200"
@@ -120,6 +146,7 @@ const TaskForm: React.FC<Props> = ({
                     as="textarea"
                     rows={10}
                     id="description"
+                    disabled={isSubmitting}
                     name="description"
                     placeholder="Describe what needs to be done"
                     className="mt-1 block w-full px-3 py-2 bg-gray-700 border transition duration-200 border-gray-700 focus:border focus:border-gray-200 rounded-sm shadow-sm focus:outline-none  sm:text-sm text-gray-200"
@@ -141,7 +168,8 @@ const TaskForm: React.FC<Props> = ({
                     selected={values.dueAt ? new Date(values.dueAt) : null}
                     showTimeSelect
                     timeIntervals={5}
-                    popperPlacement="right"
+                    disabled={isSubmitting}
+                    popperPlacement="left"
                     dateFormat="MMMM d, yyyy h:mm aa"
                     onChange={(date) => setFieldValue('dueAt', date, true)}
                     className="mt-1 block px-3 py-2 bg-gray-700 border transition duration-200 border-gray-700 focus:border focus:border-gray-200 rounded-sm shadow-sm focus:outline-none sm:text-sm text-gray-200"
@@ -153,19 +181,19 @@ const TaskForm: React.FC<Props> = ({
                   />
                 </div>
                 <PlainButton
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || !formHasChanges()}
                   color="blue"
                   additionalStyle="ml-auto"
                   onClick={() => {
                     submitForm();
                   }}
                 >
-                  {isSubmitting ? 'Creating...' : 'Create'}
+                  {isSubmitting ? 'Saving...' : 'Save'}
                 </PlainButton>
               </Form>
-            )}
-          </Formik>
-        </div>
+            </div>
+          )}
+        </Formik>
       </Box>
     </Modal>
   );

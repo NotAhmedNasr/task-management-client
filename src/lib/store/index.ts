@@ -1,6 +1,7 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import createSagaMiddleware from 'redux-saga';
 import userReducer from './user/reducer';
+import taskReducer from './task/reducer';
 
 import {
   FLUSH,
@@ -14,6 +15,7 @@ import persistStore from 'redux-persist/es/persistStore';
 
 const rootState = combineReducers({
   user: userReducer,
+  task: taskReducer,
 });
 
 const sagaMiddleware = createSagaMiddleware();
