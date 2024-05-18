@@ -65,7 +65,6 @@ const AlertDialog: React.FC = () => {
       </DialogContent>
       <DialogActions>
         <PlainButton
-          label="Cancel"
           onClick={async () => {
             try {
               await data?.onReject?.();
@@ -73,9 +72,10 @@ const AlertDialog: React.FC = () => {
               closeAlertDialog();
             }
           }}
-        />
+        >
+          Cancel
+        </PlainButton>
         <PlainButton
-          label="Ok"
           onClick={async () => {
             try {
               await data?.onAccept();
@@ -83,7 +83,9 @@ const AlertDialog: React.FC = () => {
               closeAlertDialog();
             }
           }}
-        />
+        >
+          Ok
+        </PlainButton>
       </DialogActions>
     </Dialog>
   );
